@@ -9,8 +9,9 @@ The `getApiTokenEncrypted` SDK simplifies the process of managing access tokens 
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
   - [Setup](#setup)
-  - [Usage](#usage)
+  - [Required Permissions](#required-permissions)
   - [Testing](#testing)
+  - [Usage](#usage)
   - [Additional Documentation](#additional-documentation)
   - [License](#license)
   - [Contributing](#contributing)
@@ -31,19 +32,42 @@ The `getApiTokenEncrypted` SDK simplifies the process of managing access tokens 
 3. Set up your environment variables in a `.env` file or through the AWS Lambda environment variables configuration.
 4. Deploy the SDK as part of your AWS Lambda function.
 
-## Usage
+## Required Permissions
 
-You can use the `getApiTokenEncrypted` function within your AWS Lambda handler to manage access tokens. Here's an example:
+The IAM role associated with the Lambda function must have the following permissions:
 
-```javascript
-const { refreshToken } = require('./getApiTokenEncrypted'); // Adjust the path as needed
+- `dynamodb:GetItem`: To read items from the DynamoDB table.
+- `dynamodb:PutItem`: To write items to the DynamoDB table.
+- `secretsmanager:GetSecretValue`: To retrieve secrets from Secrets Manager.
+- (Optional) Permissions for any other AWS services or resources that the Lambda function interacts with.
 
-exports.handler = async (event) => {
-  const token = await refreshToken();
-  // Your code here
-};
+You can define these permissions in an IAM policy and attach it to the IAM role used by the Lambda function. Make sure to restrict the resources to only those that the function needs to access.
 
+Example policy:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DynamoDBAccess",
+      "Effect": "Allow",
+      "Action": ["dynamodb:GetItem", "dynamodb:PutItem"],
+      "Resource": "arn:aws:dynamodb:REGION:ACCOUNT_ID:table/TableName"
+    },
+    {
+      "Sid": "SecretsManagerAccess",
+      "Effect": "Allow",
+      "Action": ["secretsmanager:GetSecretValue"],
+      "Resource": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:SecretName"
+    }
+  ]
+}
 ```
+
+Replace `REGION`, `ACCOUNT_ID`, `TableName`, and `SecretName` with your specific values.
+
+Please make sure to customize the example policy and other details according to your specific requirements and setup.
 
 ## Testing
 
@@ -51,6 +75,20 @@ You can run the tests locally using Jest:
 
 ```bash
 npm test
+```
+
+## Usage
+
+You can use the `getApiTokenEncrypted` function within your AWS Lambda handler to manage access tokens. Here's an example:
+
+```javascript
+const { refreshToken } = require('./src/getApiTokenEncrypted'); // Adjust the path as needed
+
+exports.handler = async (event) => {
+  const token = await refreshToken();
+  // Your code here
+};
+
 ```
 
 ## Additional Documentation

@@ -133,7 +133,7 @@ Please make sure to customize the example policy and other details according to 
 
 ### License
 
-This project is licensed under the GNU General Public License v3.0 (GPLv3). See the [LICENSE](./LICENSE.txtL) file for more details.
+This project is licensed under the GNU General Public License v3.0 (GPLv3). See the [LICENSE](./LICENSE.txt) file for more details.
 
 ### Author
 
