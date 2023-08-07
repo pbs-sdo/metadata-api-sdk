@@ -27,7 +27,7 @@ Welcome to the support section for the Metadata Bank API SDK. Whether you're a n
 
 ### Reporting Issues
 
-If you encounter any bugs, inconsistencies, or areas for improvement, please open an issue in our [GitHub Issues](https://github.com/your-repo/mbank-api-sdk/issues) section.
+If you encounter any bugs, inconsistencies, or areas for improvement, please open an issue in our [GitHub Issues](https://github.com/pbs-sdo/metadata-api-sdk/issues) section.
 
 - Please follow the issue template provided.
 - Include as much information as possible to help us understand and reproduce the issue.
