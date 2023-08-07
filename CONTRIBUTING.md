@@ -20,7 +20,7 @@ By participating in this project, you are expected to adhere to our [Code of Con
 ### Contributing Code
 
 1. **Fork the repository**: Click the "Fork" button at the top-right of this page to create your own copy of the repository.
-2. **Clone your fork**: Clone the repository to your local machine using `git clone https://github.com/your-username/mbank-api-sdk.git`.
+2. **Clone your fork**: Clone the repository to your local machine using `git clone https://github.com/pbs-sdo/mbank-api-sdk.git`.
 3. **Create a new branch**: Create a new branch for your feature or bug fix using `git checkout -b my-new-feature`.
 4. **Make your changes**: Implement your changes, following the coding standards and guidelines described below.
 5. **Commit your changes**: Commit your changes using a descriptive commit message that explains what you've done.
