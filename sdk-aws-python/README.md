@@ -1,11 +1,11 @@
 
-# Metadata Bank API Token Encryption (getApiTokenEncrypted.py)
+# Metadata Bank - API Token Management SDK AWS(Python)
 
 This Python script provides functionality to manage and encrypt API tokens for Metadata Bank. It allows you to fetch, save, load, encrypt, and decrypt tokens using AWS DynamoDB and Secrets Manager.
 
 ## Table of Contents
 
-- [Metadata Bank API Token Encryption (getApiTokenEncrypted.py)](#metadata-bank-api-token-encryption-getapitokenencryptedpy)
+- [Metadata Bank - API Token Management SDK AWS(Python)](#metadata-bank---api-token-management-sdk-awspython)
   - [Table of Contents](#table-of-contents)
     - [Prerequisites](#prerequisites)
     - [Environment Variable Setup](#environment-variable-setup)

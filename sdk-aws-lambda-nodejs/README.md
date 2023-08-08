@@ -1,11 +1,11 @@
 
-# SDK AWS Lambda Node.js - (getApiTokenEncrypted)
+# Metadata Bank - API Token Management SDK AWS(Lambda NodejS)
 
 The `getApiTokenEncrypted` SDK simplifies the process of managing access tokens for the Metadata Bank API. This SDK is designed to be used within an AWS Lambda function and handles the encryption and storage of tokens in AWS DynamoDB, as well as fetching secrets from AWS Secret Manager.
 
 ## Table of Contents
 
-- [SDK AWS Lambda Node.js - (getApiTokenEncrypted)](#sdk-aws-lambda-nodejs---getapitokenencrypted)
+- [Metadata Bank - API Token Management SDK AWS(Lambda NodejS)](#metadata-bank---api-token-management-sdk-awslambda-nodejs)
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
   - [Setup](#setup)
