@@ -45,7 +45,7 @@ async function fetchEpisode(url, token) {
 async function main() {
   const tokenData = await refreshToken();
   // modify the URL to fetch from the real API url
-    const episodeData = await fetchEpisode("https://metadata-bank.pbs.org/url/episode/cid:org:pbs.org:Episode25243", tokenData.access_token);
+    const episodeData = await fetchEpisode("https://{baseurl}/episode/cid:org:pbs.org:Episode25243", tokenData.access_token);
     console.log(episodeData); // log the data to the console
     console.log(JSON.stringify(episodeData));//log the data to the console as a json string
 }

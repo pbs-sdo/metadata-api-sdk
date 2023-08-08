@@ -1,0 +1,32 @@
+{
+  "name": "sdk-node-js",
+  "version": "1.0.0",
+  "description": "The `getApiTokenEncrypted` SDK simplifies the process of managing access tokens for the Metadata Bank API.",
+  "main": "sdk-getToken.js",
+  "scripts": {
+    "test": "jest test",
+    "start": "node getApiToken.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "node-fetch": "^2.6.6"
+  },
+  "keywords": [],
+  "author": "Patrick Roch",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "jest": "^29.6.2",
+    "jest-fetch-mock": "^3.0.3",
+    "nock": "^13.3.2",
+    "eslint": "^8.46.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-jest": "^27.2.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest-environment-node": "^29.6.2",
+    "prettier": "^3.0.1"
+  }
+}

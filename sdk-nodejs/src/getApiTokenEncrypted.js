@@ -1,67 +1,31 @@
-/* eslint-disable no-undef */
 require("dotenv").config();
+const fs = require("fs");
 const crypto = require("crypto");
-// eslint-disable-next-line import/no-extraneous-dependencies
-const AWS = require("aws-sdk");
+const path = require("path");
 const fetch = require("node-fetch");
-// when using LocalStack for testing, comment the following line:
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
-/**
- * * Configure the AWS SDK to use LocalStack by uncommenting the following lines:
- * const isLocal = process.env.IS_LOCAL;
- * AWS.config.update({
- * region: "us-east-1",
- * endpoint: isLocal ? "http://localhost:4566" : undefined,
- * });
- * const dynamoDB = new AWS.DynamoDB.DocumentClient({
- * region: "us-east-1",
- *  endpoint: isLocal ? "http://localhost:4566" : undefined,
- * });
- */
+const TOKEN_PATH = path.join(__dirname, "token.json");
 const ALGORITHM = "aes-256-cbc";
-
-/**
- * Retrieves secrets from AWS Secrets Manager.
- * @returns {Promise<Object>} The secrets.
- * @throws {Error} If the SECRET_NAME name variable is not set or secrets could not be retrieved.
- */
-async function getSecrets() {
-  const secretsManager = new AWS.SecretsManager();
-  const secretName = process.env.SECRET_NAME;
-  if (!secretName) {
-    throw new Error("SECRET_NAME environment variable is not set");
-  }
-  try {
-    const data = await secretsManager
-      .getSecretValue({ SecretId: secretName })
-      .promise();
-    if (data.SecretString) {
-      return JSON.parse(data.SecretString);
-    }
-    // If the secret is binary, convert it to a string
-    const buff = Buffer.from(data.SecretBinary, "base64");
-    return buff.toString("ascii");
-  } catch (error) {
-    console.error("Failed to retrieve secrets:", error);
-    throw error;
-  }
-}
 
 /**
  * Generates an encryption key using the provided consumer key and secret.
  * @param {string} consumerKey - The consumer key.
  * @param {string} consumerSecret - The consumer secret.
  * @returns {Buffer} The generated encryption key.
- * @throws {Error} If the consumer key or secret is undefined.
+ * @throws {Error} If there's an error during the hash creation process.
  */
 function generateEncryptionKey(consumerKey, consumerSecret) {
-  if (!consumerKey || !consumerSecret) {
-    throw new Error("consumerKey or consumerSecret is undefined");
+  try {
+    if (!consumerKey || !consumerSecret) {
+      throw new Error("consumerKey or consumerSecret is undefined");
+    }
+    const hash = crypto.createHash("sha256");
+    hash.update(consumerKey + consumerSecret);
+    return hash.digest().subarray(0, 32);
+  } catch (error) {
+    console.error("Error during encryption key generation:", error);
+    throw new Error(`Failed to generate encryption key: ${error.message}`);
   }
-  const hash = crypto.createHash("sha256");
-  const key = hash.digest().subarray(0, 32);
-  return key;
 }
 
 /**
@@ -108,93 +72,35 @@ function decrypt(data, key) {
 }
 
 /**
- * Saves the provided token to a DynamoDB table. The token is encrypted using the provided key before being saved.
+ * Saves the given token to a file after encrypting it with the provided key.
  * @param {Object} token - The token to save.
  * @param {Buffer} key - The encryption key.
- * @throws {Error} If there is an error while saving the token to DynamoDB.
+ * @throws {Error} If there's an error during the encryption or file writing process.
  */
-
-const TABLE_NAME = "Tokens";
-const TOKEN_ID = "apiToken";
-async function saveTokenToDynamoDB(token, key) {
+function saveTokenToFile(token, key) {
   try {
     const encryptedToken = encrypt(JSON.stringify(token), key);
-    const params = {
-      TableName: TABLE_NAME,
-      Item: {
-        Id: TOKEN_ID,
-        token: encryptedToken,
-      },
-    };
-    await dynamoDB.put(params).promise();
+    fs.writeFileSync(TOKEN_PATH, encryptedToken);
   } catch (error) {
-    console.error(`Failed to save token to DynamoDB: ${error}`);
-    throw error;
+    console.error("Error during saving token to file:", error);
+    throw new Error(`Failed to save token to file: ${error.message}`);
   }
 }
 
 /**
- * Decrypts the token from DynamoDB using the provided key.
- * @param {string} key - The encryption key.
- * @returns {string|null} The decrypted data or null if not found.
- * @throws {Error} If there's an error during decryption or fetching from DynamoDB.
+ * Loads the token from a file. The token is decrypted using the provided key after being loaded.
+ * @param {Buffer} key - The decryption key.
+ * @returns {Object|null} The loaded token, or null if the token does not exist or is expired.
  */
-
-
-async function getDecryptedDataFromDynamoDB(key) {
-  try {
-    const params = {
-      TableName: TABLE_NAME,
-      Key: {
-        Id: TOKEN_ID,
-      },
-    };
-    const data = await dynamoDB.get(params).promise();
-    if (data.Item) {
-      return decrypt(data.Item.token, key);
-    }
-  } catch (error) {
-    console.error("Error fetching from DynamoDB:", error);
-    throw new Error(`Failed to fetch token from DynamoDB: ${error.message}`);
-  }
-  return null;
-}
-
-/**
- * Parses the decrypted data into a token object.
- * @param {string} decryptedData - The decrypted data.
- * @returns {Object|null} The token object or null if invalid or expired.
- * @throws {Error} If there's an error during parsing.
- */
-function parseToken(decryptedData) {
-  if (decryptedData) {
-    try {
-      const token = JSON.parse(decryptedData);
-      if (Date.now() < token.expiry) {
-        return token;
-      }
-    } catch (error) {
-      console.error("Error parsing token:", error);
-      throw new Error(`Failed to parse token: ${error.message}`);
+function loadTokenFromFile(key) {
+  if (fs.existsSync(TOKEN_PATH)) {
+    const encryptedToken = fs.readFileSync(TOKEN_PATH, "utf8");
+    const token = JSON.parse(decrypt(encryptedToken, key));
+    if (Date.now() < token.expiry) {
+      return token;
     }
   }
   return null;
-}
-
-/**
- * Loads the token from DynamoDB, decrypts it, and checks its validity.
- * @param {string} key - The encryption key.
- * @returns {Object|null} The token object or null if not found or invalid.
- * @throws {Error} If there's an error during the process.
- */
-async function loadTokenFromDynamoDB(key) {
-  try {
-    const decryptedData = await getDecryptedDataFromDynamoDB(key);
-    return parseToken(decryptedData);
-  } catch (error) {
-    error.message = `Failed to load token from DynamoDB: ${error.message}`;
-    throw error;
-  }
 }
 
 /**
@@ -250,17 +156,14 @@ async function retryFetchToken(retries, interval, fetchTokenFunc, attempt = 0) {
  * @param {number} [interval=process.env.INTERVAL || 3000] - The interval between retries in milliseconds.
  * @param {boolean} [shouldRetry=true] - Whether to retry fetching the token if the fetch fails.
  * @returns {Promise<Object>} The fetched token.
- * @returns {Promise<Object>} The API token.
- * @throws Will throw an error if loading the token from DynamoDB fails.
  */
 async function refreshToken(
   retries = process.env.RETRIES || 2,
   interval = process.env.INTERVAL || 3000,
   shouldRetry = true,
 ) {
-  const secrets = await getSecrets();
-  const { consumerKey } = secrets;
-  const { consumerSecret } = secrets;
+  const consumerKey = process.env.CONSUMER_KEY;
+  const consumerSecret = process.env.CONSUMER_SECRET;
   const url = process.env.URL;
   const scope = process.env.SCOPE;
 
@@ -279,14 +182,7 @@ async function refreshToken(
   const fetchTokenFunc = () => fetchToken(url, headers, params);
 
   const encryptionKey = generateEncryptionKey(consumerKey, consumerSecret);
-
-  let token;
-  try {
-    token = await loadTokenFromDynamoDB(encryptionKey);
-  } catch (error) {
-    console.error("Error during loadTokenFromDynamoDB:", error);
-  }
-
+  let token = loadTokenFromFile(encryptionKey);
   if (!token) {
     if (shouldRetry) {
       token = await retryFetchToken(retries, interval, fetchTokenFunc);
@@ -294,7 +190,7 @@ async function refreshToken(
       token = await fetchTokenFunc();
     }
     token.expiry = Date.now() + token.expires_in * 1000;
-    await saveTokenToDynamoDB(token, encryptionKey);
+    saveTokenToFile(token, encryptionKey);
   }
 
   return token;
@@ -302,9 +198,6 @@ async function refreshToken(
 
 module.exports = {
   refreshToken,
-  getSecrets,
-  saveTokenToDynamoDB,
-  loadTokenFromDynamoDB,
   fetchToken,
   retryFetchToken,
   encrypt,
