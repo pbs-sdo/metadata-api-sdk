@@ -44,6 +44,6 @@ Contributors will be acknowledged in the project's documentation, and we are gra
 
 ## Questions?
 
-If you have any questions or need further clarification on anything related to contributing, please feel free to reach out by creating an issue or emailing [metadata@pbs.org](mailto:metadata@pbs.org).
+If you have any questions or need further clarification on anything related to contributing, please feel free to reach out by creating an issue or emailing [metadata-api-sdk](mailto:metadata@pbstesting2.freshdesk.com).
 
 Thank you for helping to improve Metadata Bank API SDK!

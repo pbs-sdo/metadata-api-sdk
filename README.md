@@ -41,4 +41,4 @@ This project is licensed under the terms of the [GNU General Public License v3.0
 
 ## Support
 
-For support, questions, or additional information, please refer to the [SUPPORT.md](./SUPPORT.md) file or contact us directly at [metadata@pbs.org](mailto:metadata@pbs.org).
+For support, questions, or additional information, please refer to the [SUPPORT.md](./SUPPORT.md) file or contact us directly at [metadata-api-sdk](mailto:metadata@pbstesting2.freshdesk.com).

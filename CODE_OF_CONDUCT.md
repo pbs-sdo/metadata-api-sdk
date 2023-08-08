@@ -37,7 +37,7 @@ If a community member engages in unacceptable behavior, the project maintainers 
 
 ## 5. Reporting Guidelines
 
-If you are subject to or witness unacceptable behavior, or have any other concerns, please notify a community maintainer as soon as possible by contacting [metadata@pbs.org](mailto:metadata@pbs.org).
+If you are subject to or witness unacceptable behavior, or have any other concerns, please notify a community maintainer as soon as possible by contacting [metadata-api-sdk](mailto:metadata@pbstesting2.freshdesk.com).
 
 ## 6. Scope
 
@@ -45,7 +45,7 @@ This Code of Conduct applies both within project spaces and in public spaces whe
 
 ## 7. Contact Information
 
-For any queries or to report any violations, please contact the project maintainers at [metadata@pbs.org](mailto:metadata@pbs.org).
+For any queries or to report any violations, please contact the project maintainers at [metadata-api-sdk](mailto:metadata@pbstesting2.freshdesk.com).
 
 ## 8. License and Attribution
 

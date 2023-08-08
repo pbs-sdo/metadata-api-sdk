@@ -35,7 +35,7 @@ If you encounter any bugs, inconsistencies, or areas for improvement, please ope
 
 ### Professional Support
 
-For enterprise users or those requiring dedicated support, professional support options may be available. Please contact us at [metadata@pbs.org](mailto:metadata@pbs.org) for more information.
+For enterprise users or those requiring dedicated support, professional support options may be available. Please contact us at [metadata-api-sdk](mailto:metadata@pbstesting2.freshdesk.com) for more information.
 
 ### Security Concerns
 
@@ -45,4 +45,4 @@ If you discover a security vulnerability within the SDK, please send an email to
 
 We hope that this support guide assists you in using the Metadata Bank API SDK effectively. Your feedback and contributions are invaluable to our ongoing development and enhancement of this project.
 
-For additional queries, feel free to reach out to us at [metadata@pbs.org](mailto:metadata@pbs.org).
+For additional queries, feel free to reach out to us at [metadata-api-sdk](mailto:metadata@pbstesting2.freshdesk.com).

@@ -1,5 +1,6 @@
 
 # SDK Node JS - (getApiToken)
+
 `getApiToken` is a Node.js module that provides functions for fetching an API token. It uses the `node-fetch` library for making HTTP requests.
 
 The `refreshToken` function is the main function of the module. It fetches a token from the API provider using the provided credentials and returns the JSON response. It also supports retrying the fetch if it fails.
