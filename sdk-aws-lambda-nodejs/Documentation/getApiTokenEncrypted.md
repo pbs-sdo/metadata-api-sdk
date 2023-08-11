@@ -1,4 +1,4 @@
-# SDK for Metadata Bank API v1 - "getApiTokenEncrypted"- AWS Lambda Node JS Implementation
+# (getApiTokenEncrypted) - AWS Lambda Node JS Implementation
 
 The Metadata Bank API v1 introduces breaking changes, including the implementation of OAuth 2 for API key access token management. To assist developers in transitioning to this new version, we provide an SDK that simplifies the process of obtaining and managing access tokens. This document provides a detailed explanation of the SDK's functionalities.
 
@@ -49,6 +49,10 @@ The `refreshToken` function uses the following environment variables:
 - `SECRET_NAME`: The name of the secret in AWS Secrets Manager that contains the consumer key and consumer secret.
 - `URL`: The URL of the API's token endpoint.
 - `SCOPE`: The scope of the access token.
+- `TABLE_NAME`: DynamoDB table name
+- `TOKEN_ID`: DynamoDB token id
+
+**`Important Note`:** If you are working with multiple integrations for the Metadata Bank API, it's advisable to set DynamoDB unique `TOKEN_ID` environment variables for each environment. This ensures that there is no collision between token IDs, keeping them distinct and separate for each integration.
 
 ### Return Value
 

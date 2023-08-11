@@ -6,6 +6,9 @@ const AWS = require("aws-sdk");
 const fetch = require("node-fetch");
 // when using LocalStack for testing, comment the following line:
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
+// if using multiple environments, you can customize DynamoDB table name and token ID through environment variables
+const TABLE_NAME = process.env.TABLE_NAME || "Tokens";
+const TOKEN_ID = process.env.TOKEN_ID || "apiToken";
 
 /**
  * * Configure the AWS SDK to use LocalStack by uncommenting the following lines:
@@ -25,6 +28,7 @@ const ALGORITHM = "aes-256-cbc";
  * Retrieves secrets from AWS Secrets Manager.
  * @returns {Promise<Object>} The secrets.
  * @throws {Error} If the SECRET_NAME name variable is not set or secrets could not be retrieved.
+ * @async
  */
 async function getSecrets() {
   const secretsManager = new AWS.SecretsManager();
@@ -109,13 +113,13 @@ function decrypt(data, key) {
 
 /**
  * Saves the provided token to a DynamoDB table. The token is encrypted using the provided key before being saved.
+ * The table name and token ID can be customized through environment variables.
  * @param {Object} token - The token to save.
  * @param {Buffer} key - The encryption key.
  * @throws {Error} If there is an error while saving the token to DynamoDB.
+ * @async
  */
 
-const TABLE_NAME = "Tokens";
-const TOKEN_ID = "apiToken";
 async function saveTokenToDynamoDB(token, key) {
   try {
     const encryptedToken = encrypt(JSON.stringify(token), key);
@@ -136,8 +140,9 @@ async function saveTokenToDynamoDB(token, key) {
 /**
  * Decrypts the token from DynamoDB using the provided key.
  * @param {string} key - The encryption key.
- * @returns {string|null} The decrypted data or null if not found.
+ * @returns {Promise<string|null>} The decrypted data or null if not found.
  * @throws {Error} If there's an error during decryption or fetching from DynamoDB.
+ * @async
  */
 
 
@@ -184,8 +189,9 @@ function parseToken(decryptedData) {
 /**
  * Loads the token from DynamoDB, decrypts it, and checks its validity.
  * @param {string} key - The encryption key.
- * @returns {Object|null} The token object or null if not found or invalid.
+ * @returns {Promise<Object|null>} The token object or null if not found or invalid.
  * @throws {Error} If there's an error during the process.
+ * @async
  */
 async function loadTokenFromDynamoDB(key) {
   try {
@@ -218,12 +224,13 @@ async function fetchToken(url, headers, params) {
 }
 
 /**
- * Attempts to fetch a token using the provided fetch function. If the fetch fails, it will retry the specified number of times, waiting the specified interval between each attempt.
- * @param {number} retries - The number of retries.
- * @param {number} interval - The interval between retries in milliseconds.
- * @param {Function} fetchTokenFunc - The function to retry.
+ * Fetches a token from the provided URL with the provided headers and body parameters.
+ * @param {string} url - The URL to fetch from.
+ * @param {Object} headers - The headers for the request.
+ * @param {URLSearchParams} params - The body parameters for the request.
  * @returns {Promise<Object>} The JSON response from the fetch request.
- * @throws {Error} If all retries fail.
+ * @throws {Error} If the fetch request fails.
+ * @async
  */
 async function retryFetchToken(retries, interval, fetchTokenFunc, attempt = 0) {
   try {
@@ -252,6 +259,7 @@ async function retryFetchToken(retries, interval, fetchTokenFunc, attempt = 0) {
  * @returns {Promise<Object>} The fetched token.
  * @returns {Promise<Object>} The API token.
  * @throws Will throw an error if loading the token from DynamoDB fails.
+ * @async
  */
 async function refreshToken(
   retries = process.env.RETRIES || 2,
