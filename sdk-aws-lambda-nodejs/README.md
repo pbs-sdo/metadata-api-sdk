@@ -23,7 +23,14 @@ The `getApiTokenEncrypted` SDK simplifies the process of managing access tokens 
 - AWS account with proper permissions to create and manage Lambda functions, Secret Manager, and DynamoDB.
 - AWS Lambda function must have the proper IAM roles and permissions to `get` and `put` items in DynamoDB, and to access secrets in Secret Manager.
 - Valid credentials such as `consumerKey` and `consumerSecret` stored in AWS Secret Manager.
-- Environment variables set for `SCOPE`, `Api token url`, `SECRET_NAME`, `RETRIES`, `INTERVAL`, `TABLE_NAME` and `TOKEN_ID`.
+- Environment variables set for:
+  - `RETRIES`: The default number of retries.
+  - `INTERVAL`: The default retry interval.
+  - `SECRET_NAME`: The name of the secret in AWS Secrets Manager that contains the consumer key and consumer secret.
+  - `URL`: The URL of the API's token endpoint.
+  - `SCOPE`: The scope of the access token.
+  - `TABLE_NAME`: DynamoDB table name
+  - `TOKEN_ID`: DynamoDB token id
 
 **`Important note:`** If you are working with multiple integrations for the Metadata Bank API, it's advisable to set DynamoDB unique `TOKEN_ID` environment variables for each environment. This ensures that there is no collision between token IDs, keeping them distinct and separate for each integration.
 
