@@ -7,7 +7,7 @@ This SDK provides two Node.js modules to manage OAuth tokens:
 
 ## Prerequisites
 
-- Node.js 12 or higher.
+- Node.js 18 or higher.
 - `node-fetch` library.
 - `dotenv` library (if using a `.env` file).
 - `Consumer Key`, `Consumer Secret`, `OAuth Scope`, `URL` to fetch token
